@@ -21,21 +21,25 @@ public class TaskAdapter extends BaseAdapter{
     }
 
     public void setTaskList(List<Task> taskList) {
+
         mTaskList = taskList;
     }
 
     @Override
     public int getCount() {
+
         return mTaskList.size();
     }
 
     @Override
     public Object getItem(int position) {
+
         return mTaskList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
+
         return mTaskList.get(position).getId();
     }
 
