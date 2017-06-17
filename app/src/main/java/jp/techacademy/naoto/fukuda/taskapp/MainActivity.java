@@ -8,9 +8,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.Date;
 
@@ -31,11 +35,16 @@ public class MainActivity extends AppCompatActivity {
     };
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
+    private EditText mSearchText;
+    private Button mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSearchText = (EditText) findViewById(R.id.search_text);
+        mButton = (Button) findViewById(R.id.search_button);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +76,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //SearchTextを検索した時の処理
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    reloadListView();
+
+            }
+        });
+
 
         // ListViewを長押ししたときの処理
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -119,8 +139,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadListView() {
-        // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
-        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).findAllSorted("date", Sort.DESCENDING);
+        RealmResults<Task> taskRealmResults;
+        if(mSearchText.length() == 0){
+            taskRealmResults = mRealm.where(Task.class)
+                    .findAllSorted("date", Sort.DESCENDING);
+        }else {
+            // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
+            taskRealmResults = mRealm.where(Task.class).equalTo("category", mSearchText.getText().toString())
+                    .findAllSorted("date", Sort.DESCENDING);
+        }
         // 上記の結果を、TaskList としてセットする
         mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
         // TaskのListView用のアダプタに渡す
