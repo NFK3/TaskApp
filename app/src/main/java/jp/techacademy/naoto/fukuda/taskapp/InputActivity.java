@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -161,6 +162,8 @@ public class InputActivity extends AppCompatActivity {
 
         realm.copyToRealmOrUpdate(mTask);
         realm.commitTransaction();
+        Log.d("ANDROID","mTask =" +mTask);
+        Log.d("ANDROID","realm =" +realm);
 
         realm.close();
 
